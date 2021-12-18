@@ -165,7 +165,7 @@ def keep_searching(popular_times, api_key, paging_token=False):
     return popular_times
 
 
-api_key = 'AIzaSyB0Y7YYoEcMeCLM7elF203UR8d8EOBcHqc'
+api_key = ''
 popular_times = {}
 
 popular_times = keep_searching(popular_times, api_key)
