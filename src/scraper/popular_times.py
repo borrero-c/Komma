@@ -4,6 +4,7 @@ import urllib.request
 import urllib.parse
 import ssl
 import time
+import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -144,7 +145,7 @@ def next_page_search(api_key, paging_token):
 
     return obj
 
-def keep_searching(popular_times, api_key, paging_token=False):
+def keep_searching(popular_times, api_key, paging_token=None):
     if paging_token:
         search = next_page_search(api_key, paging_token)
     else:
@@ -164,8 +165,7 @@ def keep_searching(popular_times, api_key, paging_token=False):
     
     return popular_times
 
-
-api_key = ''
+api_key = os.getenv('GOOGLE_API_KEY')
 popular_times = {}
 
 popular_times = keep_searching(popular_times, api_key)
