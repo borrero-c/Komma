@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.options import Options
 
 def get_popular_times(item, api_key):
     place_id = item['place_id']
+    return_obj = {}
 
     # use the place id to get the map url of the location
     url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={}&key={}".format(place_id, api_key)
@@ -21,6 +22,7 @@ def get_popular_times(item, api_key):
     thing = obj['result'].keys()
 
     url = obj['result']['url']
+    address = obj['result']['formatted_address']
 
     # use selenium to open the url to scrape the popular times
     chrome_options = Options()
@@ -62,9 +64,9 @@ def get_popular_times(item, api_key):
             break
 
     if current_popularity:
-        time_string = round(time.time())
-        popular_times['current_time_and_popularity'] = {
-            'time': time_string,
+        time_rn = round(time.time())
+        return_obj['current_time_and_popularity'] = {
+            'time': time_rn,
             'popularity': current_popularity
         }
 
@@ -102,7 +104,10 @@ def get_popular_times(item, api_key):
                 elif no_data:
                     popular_times[date_dict[jsinstance]] = {}
     
-    return popular_times
+    return_obj['address'] = address
+    return_obj['popularity'] = popular_times
+    
+    return return_obj
 
 def map_search(api_key):
     # find locations within 5km of san ramon coordinates
@@ -153,7 +158,6 @@ def keep_searching(popular_times, api_key, paging_token=None):
     
     results = search['results']
     next_page = search.get('next_page_token')
-
     for item in results:
         name = item['name']
         print(name)
@@ -164,9 +168,3 @@ def keep_searching(popular_times, api_key, paging_token=None):
         keep_searching(popular_times, api_key, next_page)
     
     return popular_times
-
-api_key = os.getenv('GOOGLE_API_KEY')
-popular_times = {}
-
-popular_times = keep_searching(popular_times, api_key)
-print(popular_times)
